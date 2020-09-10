@@ -3,14 +3,8 @@
 + [Чем java отличается от с++?](#Чем-java-отличается-от-с++?)
 + [Что такое менеджер памяти](#Что-такое-менеджер-памяти.)
 
-Вопросы:
+Дополнительные теория:
 
-11.	Расскажите про String pool, Int pool.
-12.	Расскажите о String.intern.
-16.	Расскажите о benchmark. Приведите примеры кода.
-18.	Расскажите о методы clone? Deep clone and shallow clone.
-
-Ответы:
 JRE
 [JRE](https://topjava.ru/blog/what-is-the-jre) (Java Runtime Environment) - среда выполнения java - программ. 
 Узнать версию JRE можно с помощью командной строки:  **java -version**. 
@@ -596,7 +590,81 @@ VisualVM’s sampler, however, takes a dump of all of the threads of execution o
 При профайлинге используются инструментальные агенты - код, который следит за выполнением методов, мы получаем все данные, 
 но меняется байткод, что может сломать программу или увеличить время работы. Но такой метод более точный.
  
-16.	Расскажите о benchmark. Приведите примеры кода.
+16.	Расскажите о benchmark. Приведите примеры кода. 
+https://www.baeldung.com/java-microbenchmark-harness 
+https://yandex.ru/turbo/nuancesprog.ru/s/p/8792/
+Бенчмарк (от англ. benchmark — «ориентир», «эталон»): Бенчмарк (программирование) — эталонный тест производительности компьютерной системы.
+
+Java Microbenchmark Harness
+Самый простой способ по-настоящему проверить свой код — это Java Microbenchmark Harness (JMH).
+Он помогает оценить фактическую производительность, *принимая во внимание прогрев JVM и оптимизацию кода*, которые могут сделать результат неясным.
+JMH стал де-факто стандартом для тестов производительности и был включен в JDK 12.
+
+Алгоритм создания простого бенчмарка JMH:
+
+1. Добавляем зависмости:
+<dependency>
+    <groupId>org.openjdk.jmh</groupId>
+    <artifactId>jmh-core</artifactId>
+    <version>1.19</version>
+</dependency>
+<dependency>
+    <groupId>org.openjdk.jmh</groupId>
+    <artifactId>jmh-generator-annprocess</artifactId>
+    <version>1.19</version>
+</dependency>
+
+2. Создаем бенчмарк методы, используя аннотацию @Benchmark:
+```java
+import org.openjdk.jmh.annotations.Benchmark;
+
+public class BenchmarkDemo {
+    @Benchmark
+    public void benchmark1() {
+    }
+
+    @Benchmark
+    public void benchmark2() {
+    }
+}
+
+// Добавляем гланвый класс, который запускает бенчмарк процесс
+
+public class BenchmarkRunner {
+    public static void main(String[] args) throws Exception {
+        org.openjdk.jmh.Main.main(args);
+    }
+}
+```
+Далее будет проведено опрделенное число итераций прогрева JVM  и итераций измерения для более точного результата.
+В итоге мы получим сводную таблицу с результатами показателей производительности.
+
+Result "gc.BenchmarkDemo.benchmark2":
+819726266,834 ±(99.9%) 50134336,159 ops/s [Average]
+(min, avg, max) = (125549633,730, 819726266,834, 1018254832,141), stdev = 212271918,539
+CI (99.9%): [769591930,675, 869860602,993] (assumes normal distribution)
+  
+Benchmark                  Mode  Cnt          Score          Error  Units
+BenchmarkDemo.benchmark1  thrpt  200  868453297,232 ± 45812959,657  ops/s
+BenchmarkDemo.benchmark2  thrpt  200  819726266,834 ± 50134336,159  ops/s
+(ops -operations per second)
+
+JMH supports some possible benchmarks: Throughput, AverageTime, SampleTime, and SingleShotTime. 
+Также мы можем изменять настройки бенчмарка:
+
+By using the @Fork annotation, we can set up how the benchmark execution happens: the value parameter controls
+how many times the benchmark will be executed, and the warmup parameter controls how many times a benchmark will dry run before results are collected, for example:
+
+@Benchmark
+@Fork(value = 1, warmups = 2)
+@BenchmarkMode(Mode.Throughput)
+public void init() {
+    // Do nothing
+}
+Эта инструкция говорит запустить два прогревочных бенчамарка и отбросить результаты, прежде чем начать реальный бенчмарк.
+This instructs JMH to run two warm-up forks and discard results before moving onto real timed benchmarking.
+Also, the @Warmup annotation can be used to control the number of warmup iterations. For example, @Warmup(iterations = 5)
+tells JMH that five warm-up iterations will suffice, as opposed to the default 20.
 
 17.	Расскажите о методы finalize.
 @Deprecated(since="9")
@@ -647,6 +715,169 @@ public class Cup {
 }
 ```
 18.	Расскажите о методы clone? Deep clone and shallow clone.
+[ссылка](https://www.examclouds.com/ru/java/java-core-russian/cloning)
+
+Бывают случаи, когда надо получить копию объекта, которая НЕ зависит от оригинала. Этот процесс в Java называется клонированием.
+
+Для клонирования объекта в Java можно воспользоваться тремя способами:
++ Переопределение метода clone() и реализация интерфейса Cloneable().
++ Использование конструктора копирования.
++ Использовать для клонирования механизм сериализации.
+
+protected native Object clone() throws CloneNotSupportedException;
+Creates and returns a copy of this object.  The precise meaning of "copy" may depend on the class of the object.
+
+- Private — объявляет метод или свойство доступным только в том классе в котором он присутствует. Тоесть к private методам и свойствам мы не можем обращаться ни из объектов, ни из дочерних классов.
+- Protected — объявляет метод или свойство защищенными. Тоесть такими, которые не могут быть доступны из объекта, реализующего класс(только если объект не создан внутри самого класса), но вполне может быть использовано в дочерних классах.
+- Public — публичный. Классы и методы, объявленные public, могут быть доступны как внутри самого класса, так и в дочерних классах и в объектах, реализовавших класс.
+
+The general intent is that, for any object {@code x}, the expression:
+- x.clone() != x will be true, and that the expression:
+- x.clone().getClass() == x.getClass() will be {@code true}, but these are not absolute requirements.
+While it is typically the case that:
+- x.clone().equals(x) will be {@code true}, this is not an absolute requirement.
+
+Класс Object определяет метод clone(), который создает копию объекта. 
+Если вы хотите, чтобы экземпляр вашего класса можно было клонировать, необходимо переопределить этот метод и реализовать интерфейс Cloneable. 
+Интерфейс Clonable - это интерфейс-маркер, он не содержит ни методов, ни переменных. Интерфейсы-маркер просто определяют поведение классов.
+*Object.clone() выбрасывает исключение CloneNotSupportedException при попытке клонировать объект не реализующий интерфейс Cloneable.*
+
+Метод clone() в родительском классе Object является protected, поэтому желательно переопределить его как public. 
+Реализация по умолчанию метода Object.clone() выполняет неполное/поверхностное (shallow) копирование. Рассмотрим пример:
+
+*Shallow clone* (Поверхностное клонирование)
+```java
+public class Car implements Cloneable {
+    private String name;
+    private Driver driver;
+
+    public Car(String name, Driver driver) {
+        this.name = name;
+        this.driver = driver;
+    }
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public Driver getDriver() {
+        return driver;
+    }
+    public void setDriver(Driver driver) {
+        this.driver = driver;
+    }
+
+    @Override
+    public Car clone() throws CloneNotSupportedException {
+        return (Car) super.clone();
+    }
+}
+
+public class Driver implements Cloneable {
+    private String name;
+    private int age;
+
+    public Driver(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public int getAge() {
+        return age;
+    }
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    @Override
+    public Driver clone() throws CloneNotSupportedException {
+        return (Driver) super.clone();
+    }
+}
+
+public class CloneCarDemo {
+    public static void main(String[] args) throws CloneNotSupportedException {
+        Car car = new Car("Грузовик", new Driver("Василий", 45));
+        Car clonedCar = car.clone();
+        System.out.println("Оригинал:\t" + car);
+        System.out.println("Клон:   \t" + clonedCar);
+
+        Driver clonedCarDriver = clonedCar.getDriver();
+        clonedCarDriver.setName("Вася");
+
+        System.out.println("Оригинал после изменения имени водителя:\t" + car);
+        System.out.println("Клон после изменения имени водителя:   \t\t" + clonedCar);
+    }
+}
+```
+В этом примере клонируется объект класса Car. Клонирование выполняется поверхностное - новый объект clonedCar содержит ссылку на тот же объект класса Driver,
+что и объект car. Если вас это не устраивает, то необходимо самим написать "глубокое" клонирование - создать новый объект класса Driver. Перепишем метод clone() класса Car:
+Пример 2. Deep clone (Глубокое клонирование):
+
+@Override
+public Car clone() throws CloneNotSupportedException {
+    Car newCar = (Car) super.clone();
+    Driver driver = this.getDriver().clone();
+    newCar.setDriver(driver);
+    return newCar;
+}
+
+*Т.е. в этом случае мы также клонируем целевой объект, затем клонируем у целевого объекта клонируем отдельные поля и сетим эти поля в клон объекта.*
+
+3. Конструктор копирования
+Еще один вариант клонирования объекта - это конструктор копирования. Создается конструктор, принимающий на вход объект того же класса, который необходимо клонировать:
+
+Пример 3. Конструктор копирования с поверхностным клонированием
+
+```java
+public class Car implements Cloneable {
+    private String name;
+    private Driver driver;
+
+    public Car(String name, Driver driver) {
+        this.name = name;
+        this.driver = driver;
+    }
+
+    /**
+     * Конструктор копирования.
+     *
+     * @param otherCar
+     */
+    public Car(Car otherCar) {
+        this(otherCar.getName(), otherCar.getDriver());
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Driver getDriver() {
+        return driver;
+    }
+
+    public void setDriver(Driver driver) {
+        this.driver = driver;
+    }
+}
+```
+Опять же  - пример показывает неглубокое клонирование. Перепишем конструктор для реализации "глубокого" копирования:
+
+Пример 4.  Конструктор копирования с "глубоким" клонированием
+public Car(Car otherCar) throws CloneNotSupportedException {
+    this(otherCar.getName(), otherCar.getDriver().clone());
+}
+
 19.	Расскажите о Stack, Heap.
 Критерии оценки сборщиков:
 + Максимальная задержка — максимальное время, на которое сборщик приостанавливает выполнение программы для выполнения одной сборки. Такие остановки называются stop-the-world (или STW).
