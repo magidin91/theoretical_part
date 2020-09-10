@@ -18,9 +18,7 @@
 + [Расскажите о benchmark](#Расскажите-о-benchmark)
 + [Расскажите о методе finalized](#Расскажите-о-методе-finalized)
 + [Расскажите о методе clone](#Расскажите-о-методе-clone)
-+ [Расскажите о Stack, Heap](#Расскажите-о-Stack,-Heap)
-
-Дополнительные теория:
++ [Расскажите о Stack, Heap](#расскажите-о-stack-heap)
 
 JRE
 [JRE](https://topjava.ru/blog/what-is-the-jre) (Java Runtime Environment) - среда выполнения java - программ. 
