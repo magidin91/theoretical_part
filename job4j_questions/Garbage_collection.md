@@ -2,7 +2,7 @@
 
 + [Чем java отличается от с++?](#Чем-java-отличается-от-с++?)
 + [Что такое менеджер памяти](#Что-такое-менеджер-памяти.)
-+ [##Расскажите о методе clone?(Deep clone and shallow clone)](#Расскажите-о-методе-clone?(Deep clone and shallow clone))
++ [Расскажите о методе clone?](#Расскажите-о-методе-clone?))
 
 
 Дополнительные теория:
@@ -716,7 +716,8 @@ public class Cup {
      }
 }
 ```
-18. ##Расскажите о методе clone?(Deep clone and shallow clone)
+18. ##Расскажите о методе clone?
+(Deep clone and shallow clone)
 [ссылка](https://www.examclouds.com/ru/java/java-core-russian/cloning)
 
 Бывают случаи, когда надо получить копию объекта, которая НЕ зависит от оригинала. Этот процесс в Java называется клонированием.
