@@ -16,7 +16,7 @@
 + [Как использовать VisualVM](#Как-использовать-VisualVM)
 + [Чем отличается sampling от profiling](#Чем-отличается-sampling-от-profiling)
 + [Расскажите о benchmark](#Расскажите-о-benchmark)
-+ [Расскажите о методы finalized](#Расскажите-о-методы-finalized)
++ [Расскажите о методе finalized](#Расскажите-о-методе-finalized)
 + [Расскажите о методе clone](#Расскажите-о-методе-clone)
 + [Расскажите о Stack, Heap](#Расскажите-о-Stack,-Heap)
 
@@ -571,7 +571,9 @@ System.out.println(new Boolean(true)==true);
        false
        false
        false
-       true
+       true  
+       
+[к оглавлению](#Garbage-Collection)
 
 ## Расскажите о String.intern
 https://jsehelper.blogspot.com/2016/01/java-core-3.html
@@ -701,7 +703,7 @@ This instructs JMH to run two warm-up forks and discard results before moving on
 Also, the @Warmup annotation can be used to control the number of warmup iterations. For example, @Warmup(iterations = 5)
 tells JMH that five warm-up iterations will suffice, as opposed to the default 20.
 
-17.	Расскажите о методы finalize.
+## Расскажите о методе finalized
 @Deprecated(since="9")
 protected void finalize() throws Throwable { }
 
