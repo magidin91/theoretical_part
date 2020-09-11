@@ -1,10 +1,9 @@
 package gc;
 
-public class Demo {
+public class ProtectedDemo {
     public static void main(String[] args) {
-        new Demo().protectedMethod();
+        new ProtectedDemo().protectedMethod();
     }
-
 
     protected void protectedMethod(){
         System.out.println("works");
