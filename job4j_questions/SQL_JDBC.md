@@ -7,9 +7,10 @@
 + [CREATE](#CREATE) 
 + [INSERT](#INSERT) 
 + [SELECT](#SELECT) 
-+ [Alter](#Alter) 
++ [Alter](#Alter)
++ [UPDATE/DELETE ](#UPDATE-DELETE )
 + [Команды PostgreSQL](#Команды-PostgreSQL)
-+ [Ограничения столбцов и таблиц](#КОграничения-столбцов-и-таблиц)
++ [Ограничения столбцов и таблиц](#Ограничения-столбцов-и-таблиц)
 + [Что такое первичный ключ?](#Что-такое-первичный-ключ)
 + [Что такое внешний ключ?](#Что-такое-внешний-ключ)
 + [Что такое нормализация БД?](#Что-такое-нормализация-БД)
@@ -57,7 +58,11 @@
 **CREATE TABLE Orders (Id SERIAL PRIMARY KEY, CustomerId INTEGER REFERENCES Customers (Id), Quantity INTEGER);**
  
 Создать таблицу на основании указанных столбцов другой таблицы:  
-create table people_new as Select name, age, passport from people; (Не только создает структуру, но и копирует данные)    
+create table people_new as Select name, age, passport from people; (Не только создает структуру, но и копирует данные)  
+
+Значение по умолчанию в столбце таблицы:        
+**CREATE TABLE shop_goods (id serial primary key, cost DEC(3,2) NOT NULL DEFAULT 1.00);** 
+cost - Этот столбец ВСЕГДА должен содержать значение. Для этого мы не только объявляем его с ключевыми словами NOT NULL, но и присваиваем значение по умолчанию 1.00     
 
 [к оглавлению](#SQL-Jdbc)    
 
@@ -89,14 +94,12 @@ insert into students (name, birth_date) values ('Ivan', '2009-06-04') RETURNING 
 ##  Where (AND, OR, <>,<=, IS NULL, LIKE+ % и _ , BETWEEN, IN, NOT IN)      
 Для фильтрации данных применяется оператор WHERE, после которого указывается условие, на основании которого производится фильтрация.     
   
-+ **AND, OR, NOT**  
-**SELECT * FROM Products WHERE Manufacturer = 'Samsung' AND Price > 50000;**    
- 
+**AND, OR, NOT**    
+**SELECT * FROM Products WHERE Manufacturer = 'Samsung' AND Price > 50000;**      
 **NOT** - выберем все товары, у которых производитель не Samsung:      
 **SELECT * FROM Products WHERE NOT Manufacturer = 'Samsung';**    
 Но в большинстве случаев можно обойтись без оператора NOT. Предыдущий пример мы можем переписать:    
 **SELECT * FROM Products WHERE Manufacturer <> 'Samsung'**  
-  
 Также в одной команде SELECT можно использовать сразу несколько операторов:
 SELECT * FROM Products WHERE Manufacturer = 'Samsung' OR Price > 30000 AND ProductCount > 2;  
 Так как **оператор AND имеет более высокий приоритет**, то сначала будет выполняться 
@@ -105,12 +108,12 @@ SELECT * FROM Products WHERE Manufacturer = 'Samsung' OR Price > 30000 AND Produ
 С помощью скобок мы также можем переопределить порядок операций:  
 **SELECT * FROM Products WHERE (Manufacturer = 'Samsung' OR Price > 30000) AND ProductCount > 2;**    
 
-+ **IS NULL**      
+**IS NULL**        
 Если необходимо получить строки, у которых поле ProductCount не равно NULL, то можно использовать оператор NOT:  
 SELECT * FROM Products WHERE ProductCount IS NOT NULL;  
 [подробнее](https://metanit.com/sql/postgresql/3.3.php)  
 
-+  **Операторы сравнения при поиске текстовых данных:** 
+**Операторы сравнения при поиске текстовых данных:** 
 **LIKE**       
 Ключевое слово LIKE, в сочетании со специальными символами ищет часть текстовой строки и возвращает совпадения.  
 **SELECT * FROM my_contacts Where location LIKE '%CA’;**    
@@ -120,7 +123,7 @@ SELECT * FROM Products WHERE ProductCount IS NOT NULL;
 **SELECT first_name FROM my_contacts Where first_name LIKE '_им';**  
 Запрос возвращает имена, которые со стоят из одной буквы + ≪иМ≫: KиM,  ТиМ и т.д.     
 
-+ **Проверка вхождения значений в диапазон**    
+**Проверка вхождения значений в диапазон**      
 Обычный вариант:    
 **SELECT drink_name FROM drink_info WHERE calories>= 30  AND calories<= 60;**    
 **BETWEEN**  
@@ -129,36 +132,40 @@ SELECT * FROM Products WHERE ProductCount IS NOT NULL;
 **SELECT drink_name FROM drink_info WHERE drink_name BETWEEN 'Д ' AND 'O';**    
 Запрос возвращает названия всех напитков, начинающихся с Д, заканчивающихс О и всех букв между ними.  
 
-+ **IN (совпадает со значением из набора)**   
+**IN (совпадает со значением из набора)**     
 После IN следует набор значений в круглых скобках.     
 **SELECT date_name FROM black_book WHERE rating IN ('оригинально', 'потрясающе', 'неплохо');**  
 NOT IN (не входит в набор значений)    
 **SELECT date_name FROM black_book WHERE rating NOT IN ('оридтинально', 'потрясающе', ’неплохо’);**   
 
-+ **Другие применения NOT**  
+**Другие применения NOT**    
 Ключевое слово NOT может использоваться не только с IN, но и с BETWEEN и LIKE. Однако необходимо помнить, что NOT следует сразу же после WHERE.    
 SELECT drink_name FROM drink_info WHERE NOT carbs BETWEEN 3 AND 5;  
 Если ключевое слово Not используется с And или Or, оно записывается после And или Or.  
 SELECT date_name FROM black_book WHERE date_name LIKE 'A%' and NOT date name LIKE 'E%';  
 
-+ **Получение части строки:**    
+**Получение части строки:**      
 **Right, Left**    
 Для выделения заданного количества символов в столбце используются функции RIGHT() и LEFT();    
 **SELECT RIGHT (location , 2) FROM my_contacts;**    
-Функция выделяет два последних символа из столбца location;
-  
-+ **SUBSTRING**  
+Функция выделяет два последних символа из столбца location;   
+**SUBSTRING**  
 Функция SUBSTRING(выражение, начальная позиция, длина) позволяет извлечь из выражения его часть заданной длины, 
 начиная от заданной начальной позиции. Выражение может быть символьной или бинарной строкой, а также иметь тип text или image.  
 Например, если нам потребуется получить три символа в названии корабля, начиная со второго символа:
 **SELECT name, SUBSTRING(name, 2, 3) FROM Ships;** (выведет столбец SUBSTRING)  
-+ **SUBSTR**  
+**SUBSTR**    
 Команда SUBSTR (interests , LENGTH (interest1) +2) возвращает часть строки interest1, отрезав от нее левую часть указанной длины.
-**UPDATE my_contacts SET interests = SUBSTR (interest, LENGTH (interest1)+2);**  
+**UPDATE my_contacts SET interests = SUBSTR (interest, LENGTH (interest1)+2);**    
 
-+ **AS**  
+**AS**    
 С помощью оператора AS можно изменить название выходного столбца или определить его псевдоним:  
 SELECT ProductCount AS Title, Manufacturer, Price * ProductCount  AS TotalSum FROM Products;  
+
+**Limit и offset**    
+Выбрать **limit** записей, начиная с **(offset+1)**-ой:  
+**SELECT* FROM students LIMIT 10 OFFSET 14;** (получим 10 записей, начиная с 15-ой)  
+offset - это смещение, т.е. чтобы получить вторую запись, а не первую  offset = 1    
 
 [к оглавлению](#SQL-Jdbc)  
 
@@ -182,7 +189,7 @@ ALTER TABLE Customers ALTER COLUMN FirstName DROP NOT NULL;
 ALTER TABLE Customers ADD PRIMARY KEY (cust_id);  
 Добавление ограничение UNIQUE - определим для столбца Email уникальные значения:  
 ALTER TABLE Customers ADD UNIQUE (Email);  
-Мы можем явным образом назначить ограничению при добавлении имя с помощью оператора CONSTRAINT.  
+Мы можем явным образом назначить ограничению при добавлении имени с помощью оператора CONSTRAINT.  
 ALTER TABLE Customers ADD CONSTRAINT phone_unique UNIQUE (Phone);  
 **Удалить ограничение**  
 Чтобы удалить ограничение, надо знать его имя:  
@@ -192,51 +199,9 @@ ALTER TABLE Customers DROP CONSTRAINT phone_unique;
 ALTER TABLE Customers RENAME COLUMN Address TO City;  
 Переименуем таблицу Customers в Users:  
 ALTER TABLE Customers RENAME TO Users;  
-[подробнее](https://metanit.com/sql/postgresql/2.6.php)   
+[подробнее](https://metanit.com/sql/postgresql/2.6.php)    
   
-+ Limit и offset  
-Выбрать **limit** записей, начиная с **(offset+1)**-ой:  
-SELECT* FROM students LIMIT 10 OFFSET 14; (получим 10 записей, начиная с 15-ой)  
-offset - это смещение, т.е. чтобы получить вторую запись, а не первую  offset = 1    
-
-+ Значение по умолчанию в столбце таблицы    
-CREATE TABLE shop_goods (id serial primary key, cost DEC(3,2) NOT NULL DEFAULT 1.00);  
-cost - Этот столбец ВСЕГДА должен содержать значение. Для этого мы не только объявляем его с ключевыми словами NOT NULL, но и присваиваем значение по умолчанию 1.00  
-
 [к оглавлению](#SQL-Jdbc)  
-
-## Ограничения столбцов и таблиц 
-+ **UNIQUE**  
-Если мы хотим, чтобы столбец имел только уникальные значения, то для него можно определить атрибут UNIQUE  
-CREATE TABLE Customers (Id SERIAL, FirstName varchar(30) UNIQUE );  
-В данном случае FirstName будет иметь уникальное значение. И мы не сможем добавить в таблицу две строки,
-у которых значения для этих столбцов будет совпадать.  
-Также мы можем определить этот атрибут на уровне таблицы:  
-CREATE TABLE Customers (Id SERIAL PRIMARY KEY, Email varchar(30), Phone varchar(30), Age INTEGER, UNIQUE(Email, Phone));  
-или: CREATE TABLE Customers (Id SERIAL PRIMARY KEY, Email varchar(30), Phone varchar(30), Age INTEGER,  UNIQUE(Email), UNIQUE(Phone));  
-+ **CHECK**   
-Ключевое слово CHECK задает ограничение для диапазона значений, которые могут храниться в столбце.
-Для этого после слова CHECK указывается в скобках условие, которому должен соответствовать столбец.  
-CREATE TABLE Customers (Id SERIAL PRIMARY KEY,
-Age INT CHECK(Age >0 AND Age < 100),  
-Email VARCHAR(30) CHECK(Email !=''),   
-Phone VARCHAR(20) UNIQUE CHECK(Phone !=''));  
-+ **CONSTRAINT**  
-С помощью ключевого слова CONSTRAINT можно задать имя для ограничений. В качестве ограничений могут использоваться **PRIMARY KEY, UNIQUE, CHECK**.
-Необязательно задавать имена ограничений, но, зная имя ограничения, мы можем к нему обращаться, например, для его удаления.  
-CREATE TABLE Customers (   
-Id SERIAL CONSTRAINT customer_Id PRIMARY KEY,
-Email VARCHAR(30) CONSTRAINT customers_email_key UNIQUE,
-Phone VARCHAR(20) CONSTRAINT customers_phone_key UNIQUE); 
-Мы задали названия: customer_Id, customers_email_key, customers_phone_key.    
-И также можно задать все имена ограничений через атрибуты таблицы:  
-CREATE TABLE Customers ( Id SERIAL, Age INTEGER, Email VARCHAR(30), Phone VARCHAR(20),  
-CONSTRAINT customer_Id PRIMARY KEY(Id),  
-CONSTRAINT customers_age_check CHECK(Age >0 AND Age < 100),  
-CONSTRAINT customers_email_key UNIQUE(Email),  
-CONSTRAINT customers_phone_key UNIQUE(Phone));  
-
-[к оглавлению](#SQL-Jdbc) 
 
 ## UPDATE/DELETE  
 **UPDATE**  
@@ -254,8 +219,41 @@ DELETE FROM Products WHERE Manufacturer='Apple';
 Если необходимо вовсе удалить все строки вне зависимости от условия, то условие можно не указывать:  
 DELETE FROM Products;  
 
-[к оглавлению](#SQL-Jdbc)    
-  
+[к оглавлению](#SQL-Jdbc)  
+
+## Ограничения столбцов и таблиц 
+**UNIQUE**    
+Если мы хотим, чтобы столбец имел только уникальные значения, то для него нужно определить атрибут UNIQUE  
+CREATE TABLE Customers (Id SERIAL, FirstName varchar(30) UNIQUE );  
+В данном случае FirstName будет иметь уникальное значение. И мы не сможем добавить в таблицу две строки,
+у которых значения для этих столбцов будет совпадать.    
+Также мы можем определить этот атрибут на уровне таблицы:  
+CREATE TABLE Customers (Id SERIAL PRIMARY KEY, Email varchar(30), Phone varchar(30), Age INTEGER, UNIQUE(Email, Phone));  
+CREATE TABLE Customers (Id SERIAL PRIMARY KEY, Email varchar(30), Phone varchar(30), Age INTEGER,  UNIQUE(Email), UNIQUE(Phone));  
+**CHECK**     
+Ключевое слово CHECK задает ограничение для диапазона значений, которые могут храниться в столбце.
+Для этого после слова CHECK указывается в скобках условие, которому должен соответствовать столбец.  
+CREATE TABLE Customers (Id SERIAL PRIMARY KEY,
+Age INT CHECK(Age >0 AND Age < 100),  
+Email VARCHAR(30) CHECK(Email !=''),   
+Phone VARCHAR(20) UNIQUE CHECK(Phone !=''));  
+**CONSTRAINT**    
+С помощью ключевого слова CONSTRAINT можно задать имя для ограничений. В качестве ограничений могут использоваться **PRIMARY KEY, UNIQUE, CHECK**.
+Необязательно задавать имена ограничений, но, зная имя ограничения, мы можем к нему обращаться, например, для его удаления.    
+CREATE TABLE Customers (     
+Id SERIAL CONSTRAINT customer_Id PRIMARY KEY,  
+Email VARCHAR(30) CONSTRAINT customers_email_key UNIQUE,  
+Phone VARCHAR(20) CONSTRAINT customers_phone_key UNIQUE);   
+Мы задали названия: customer_Id, customers_email_key, customers_phone_key.      
+И также можно задать все имена ограничений через атрибуты таблицы:  
+CREATE TABLE Customers ( Id SERIAL, Age INTEGER, Email VARCHAR(30), Phone VARCHAR(20),    
+CONSTRAINT customer_Id PRIMARY KEY(Id),    
+CONSTRAINT customers_age_check CHECK(Age >0 AND Age < 100),    
+CONSTRAINT customers_email_key UNIQUE(Email),    
+CONSTRAINT customers_phone_key UNIQUE(Phone));    
+
+[к оглавлению](#SQL-Jdbc) 
+
 ## Что такое первичный ключ?  
 С помощью выражения PRIMARY KEY столбец можно сделать первичным ключом. Первичный ключ - ункиальный идентификатор строки в таблице.
 В качестве первичного ключа необязательно должны выступать столбцы с типом SERIAL, они могут представлять любой другой тип.  
