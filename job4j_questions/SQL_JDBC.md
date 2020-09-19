@@ -1,8 +1,8 @@
 ## SQL, Jdbc  
 
-+ прочитать этот туториал при возможности - [sql-туториал](http://www.sql-tutorial.ru/ru/content.html)       
-acid 
-**SQL:**
+прочитать этот туториал при возможности - [sql-туториал](http://www.sql-tutorial.ru/ru/content.html)         
+
+**SQL:**  
 + [Общее](#Общее)
 + [CREATE](#CREATE) 
 + [INSERT](#INSERT) 
@@ -49,22 +49,21 @@ acid
 
 [к оглавлению](#SQL-Jdbc)       
 
-## CREATE  
-Создать таблицу:    
-create table students (id serial primary key, name varchar(20), birth_date timestamp);  
-**Создание таблицу с Внешним ключом**  
-CREATE TABLE Orders (Id SERIAL PRIMARY KEY, CustomerId INTEGER, Quantity INTEGER, FOREIGN KEY (CustomerId) REFERENCES Customers (Id));  
-или CREATE TABLE Orders (Id SERIAL PRIMARY KEY, CustomerId INTEGER REFERENCES Customers (Id), Quantity INTEGER); 
-+ **Создать таблицу на основании указанных столбцов другой таблицы**
-create table people_new as Select name, age, passport from people;  
-Не только создает структуру, но и копирует данные.  
+## CREATE     
+Создание таблицы с Внешним ключом:  
+CREATE TABLE Orders (Id SERIAL PRIMARY KEY, CustomerId INTEGER, Quantity INTEGER, FOREIGN KEY (CustomerId) REFERENCES Customers (Id)); 
+или  
+CREATE TABLE Orders (Id SERIAL PRIMARY KEY, CustomerId INTEGER REFERENCES Customers (Id), Quantity INTEGER);
+ 
+Создать таблицу на основании указанных столбцов другой таблицы:  
+create table people_new as Select name, age, passport from people; (Не только создает структуру, но и копирует данные)    
 
 [к оглавлению](#SQL-Jdbc)    
 
 ## INSERT  
-insert into students values (1, 'Ivan', '2009-06-04'), (2, 'Petr', '2009-06-04');  
+INSERT into students values (1, 'Ivan', '2009-06-04'), (2, 'Petr', '2009-06-04');  
 Можно указать конкретные столбцы:  
-insert into students (name, birth_date) values ('Ivan', '2009-06-04'), ('Petr', '2009-06-04');  
+INSERT into students (name, birth_date) values ('Ivan', '2009-06-04'), ('Petr', '2009-06-04');  
 При вставке можно посмотреть значения тех столбцов, которые мы не указываем при вставке, например первичного ключа. 
 insert into students (name, birth_date) values ('Ivan', '2009-06-04') RETURNING id; 
 + **INSERT с SELECT**  (вставить)  
