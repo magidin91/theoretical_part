@@ -39,10 +39,10 @@
  + [Что вы можете рассказать о фантомном чтении? Какой уровень изоляции его предотвращает?](#Что-вы-можете-рассказать-о-фантомном-чтении-Какой-уровень-изоляции-его-предотвращает)
  + [Что такое SQL Warning? Как возвратить SQL предупреждения в JDBC программе?](#Что-такое-SQL-Warning-Как-возвратить-SQL-предупреждения-в-JDBC-программе)
  + [Как запустить Oracle Stored Procedure с объектами базы данных INOUT?](#Как-запустить-Oracle-Stored-Procedure-с-объектами-базы-данных-INOUT)
- + [Приведите пример возникновения java.sql.SQLException: No suitable driver found.](#Приведите-пример-возникновения-javasqlSQLException:-No-suitable-driver-found)
+ + [Приведите пример возникновения java.sql.SQLException: No suitable driver found.](Приведите-пример-возникновения-javasqlSQLException-No-suitable-driver-found)
  + [Best Practices в JDBC.](#Best-Practices-в-JDBC)  
  
- ## JDBC 
+## JDBC 
   
 ## Что такое JDBC API и когда его используют
 JDBC  (Java DataBase Connectivity) — интерфейс (стандарт/API) взаимодействия Java-приложений с различными СУБД. 
