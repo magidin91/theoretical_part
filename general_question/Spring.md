@@ -1,1 +1,0 @@
-https://topjava.ru/blog/spring-framework-vs-spring-boot-differences

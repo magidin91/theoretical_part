@@ -1,0 +1,4 @@
+стратегия
+декоратор
+синглон
+dependency Inversion 
