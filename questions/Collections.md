@@ -1221,10 +1221,8 @@ TreeMap(Map<? extends K,​? extends V> map): создает дерево, в к
 TreeMap(SortedMap<K, ? extends V> smap): создает дерево, в которое добавляет все элементы из отображения smap  
 TreeMap(Comparator<? super K> comparator): создает пустое дерево, где все добавляемые элементы впоследствии будут отсортированы компаратором.  
 
-
-
-
-  
+Пример:  
+[Классы примера](https://github.com/magidin91/theoretical_part/blob/collections/src/main/java/collections/map/TreeMapProgram.java) // помнять ан ссылку из мастера
 
 ```java
 public class Program{
