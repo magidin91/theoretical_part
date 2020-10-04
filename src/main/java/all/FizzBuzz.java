@@ -1,4 +1,4 @@
-package common;
+package all;
 
 import java.util.stream.IntStream;
 

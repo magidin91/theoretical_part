@@ -1,4 +1,4 @@
-package common;
+package all;
 
 class Alfa {
  Alfa getThis() {
