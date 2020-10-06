@@ -28,5 +28,6 @@ public class Demo {
         HashSet <Integer> hashSet = new HashSet<>();
         hashSet.add(1);
         hashSet.add(1);
+        new PriorityQueue();
     }
 }
