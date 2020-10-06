@@ -1,4 +1,4 @@
-package collections.list;
+package collections;
 
 import java.util.*;
 
@@ -17,6 +17,16 @@ public class Demo {
         new HashMap();
         new Hashtable();
         new TreeMap();
+        new TreeSet();
         new LinkedHashMap();
+        Set x;
+        new HashSet<>();
+        new LinkedHashSet();
+        Map.of(1,1);
+        Set.of(null, 1);
+        List.of(null, 1);
+        HashSet <Integer> hashSet = new HashSet<>();
+        hashSet.add(1);
+        hashSet.add(1);
     }
 }
