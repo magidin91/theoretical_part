@@ -775,7 +775,8 @@ public class Car implements Comparable<Car> {
 [к оглавлению](#collections-pro)
 
 ## Что такое коллекции.  
-  
+![alt text](https://github.com/magidin91/theoretical_part/blob/master/src/main/resources/collection.png)   
+    
 Коллекция - это группа элементов. 
 Java Collection Framework — иерархия интерфейсов и их реализаций, которые яаляются структурами данных. 
 На вершине иерархии в Java Collection Framework располагаются 2 интерфейса: 
