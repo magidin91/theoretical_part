@@ -1,4 +1,4 @@
-package common;
+package all;
 //статическая типизация во время компиляции
 public class StaticTypification {
     public static void main(String[] args) {
