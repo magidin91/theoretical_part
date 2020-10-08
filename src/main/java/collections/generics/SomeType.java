@@ -18,7 +18,7 @@ public class SomeType<T> {
     }
 
     public static void main(String[] args) {
-        SomeType<String> st = new SomeType<>();
+        SomeType st = new SomeType();
         List<String> list = Arrays.asList("test");
         st.test(list);
     }

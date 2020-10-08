@@ -1,5 +1,6 @@
 package collections.generics;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Wild1 {
@@ -8,7 +9,7 @@ public class Wild1 {
         Object object = numLis.get(0);
         //Number object = numLis.get(0);
         System.out.println(object);
-        List<? extends Number> intLis = List.of(1, 2);
+        List<? extends Number> intLis = new ArrayList<>(List.of(1, 2));
         Number number = intLis.get(0);
         intLis.add(null);
         //Number object = numLis.get(0);

@@ -29,5 +29,7 @@ public class Demo {
         hashSet.add(1);
         hashSet.add(1);
         new PriorityQueue();
+       Iterator iterator;
+       new WeakHashMap();
     }
 }
