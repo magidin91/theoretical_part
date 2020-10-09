@@ -29,3 +29,10 @@
 Для чего используется ключевое слово var?
 В каких случаях можно использовать var?  
 
+Получить из массива int массив Integer:
+Integer [] integerArray = IntStream.of(intArray).boxed().toArray(Integer []::new);  
+char[] array = {'a','c','b'};
+Character[] newArray = IntStream.range(0, array.length).mapToObj(i -> array[i]).toArray(Character[]::new);
+  
+Получить лист символов из строки:  
+List<Character> charList = "твояСтрока".chars().mapToObj(c -> (char) c).collect(Collectors.toList());
