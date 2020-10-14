@@ -1,6 +1,6 @@
 # theoretical_part
 ## Основные конспекты:  
-+ [Collections](#https://github.com/magidin91/theoretical_part/blob/master/questions/Collections.md)
++ [Collections](https://github.com/magidin91/theoretical_part/blob/master/questions/Collections.md)
 + [Дженерики в коллекциях](#Дженерики-в-коллекциях)
 + [Ограничения обобщений](#Ограничения-обобщений)
 + [Raw Type](#Raw-Type)
