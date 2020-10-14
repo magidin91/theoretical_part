@@ -1,8 +1,8 @@
 ## Collections Pro  
 Материалы:  
-+ https://habr.com/ru/post/162017/
-+ https://itsobes.ru/JavaSobes/tags/dzheneriki/   
-Добавить после многопоточки concurrent коллекции: https://habr.com/ru/company/luxoft/blog/157273/
+https://habr.com/ru/post/162017/  
+https://itsobes.ru/JavaSobes/tags/dzheneriki/     
+Добавить после многопоточки concurrent коллекции: https://habr.com/ru/company/luxoft/blog/157273/  
 
 + [Что такое генерики](#Что-такое-генерики)
 + [Дженерики в коллекциях](#Дженерики-в-коллекциях)
