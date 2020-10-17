@@ -6,7 +6,11 @@
 
     <groupId>com.my.theoretical_part</groupId>
     <artifactId>theoretical_part</artifactId>
+    <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>spring</module>
+    </modules>
     <properties>
         <maven.compiler.source>14</maven.compiler.source>
         <maven.compiler.target>14</maven.compiler.target>
