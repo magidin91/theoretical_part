@@ -6,7 +6,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 /**
- * Конфигурация для тестов
+ * Конфигурация для тестов, указываем где спрингу искать компоненты
  */
 @EnableAutoConfiguration
 @EnableJpaRepositories(basePackages = {"ru.education.jpa"}) // указываем, где репозитории Jpa

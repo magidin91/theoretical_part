@@ -13,6 +13,9 @@ import ru.education.service.ProductService;
 
 import java.util.List;
 
+/**
+ * реализация ProductService
+ */
 @Service
 public class DefaultProductService implements ProductService {
     private final ProductRepository productRepository;

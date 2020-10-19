@@ -164,10 +164,211 @@ private ResultClass> mapper(InputClass inputClassObject) {
 [к оглавлению](#SPRING)
 
 ## JPA  
+В отличии от JDBC запросы могут генерироваться автоматически ORM-ом исходя из названия и сигнатуры метода.
+Обычно такие автоматически генерируемые SQL-запросы менее эффективные, чем JDBC запросы, 
+т.к. там где бы был один JDBC запрос будет сгенерировано несколько SQL-запросов через JPA, и соответственно несколько будет обращений к бд.    
+В JPA мы выигрываем в количестве кода и трудоемкости написания кода, но проигрываем в эффективности и быстроте JDBC.  
+При этом в spring-boot-starter-data-jpa внутри содержатся зависимости jdbc и hibernate.
+(т.е. если мы явно не добавим эти зависмости, они все будут подтянуты из spring-boot-starter-data-jpa)   
+
+Также мы можем написать нативыне SQL-запросы.    
+выполняем Query с параметром :productId, который берем из параметра метода @Param("productId") int productId:  
+@Query(value = "select max(price) from sales_periods where product = :productId", nativeQuery = true)  
+Integer getMaxPriceByProductId(@Param("productId") int productId);
+
+```java
+@Repository
+public interface SalesPeriodsRepository extends JpaRepository<SalesPeriods, Integer> {
+    /**
+     * выполняем Query с параметром :productId, который берем из параметра метода @Param("productId") int productId
+     */
+    @Query(value = "select max(price) from sales_periods where product = :productId", nativeQuery = true)
+    Integer getMaxPriceByProductId(@Param("productId") int productId);
+
+    /**
+     * запрос генерируется автоматически ORM исхояд из названия и сигнатуры метода
+     */
+    boolean existsByPrice(long price);
+    List<SalesPeriods> findByDateToIsNull();
+    List<SalesPeriods> findByProductName(String productName);
+    List<SalesPeriods> findByProduct(Product product);
+    List<SalesPeriods> findByDateToIsNullAndProductId(Integer productId);
+}
+```
 
 ## JDBC
-(см.проект eduexample)  
+(см.проект eduexample)
+[ссылка на пример](https://github.com/magidin91/theoretical_part/blob/master/spring/src/main/java/ru/education/jdbc/SalesProductJDBCRepository.java) 
 
+Создаем репозиторий, в котором указываем тимплейт, тимплейт берет настройки из application.yml для подключения к бд,  и и знего мы пишем запросы:  
+```java
+@Repository
+public class SalesProductJDBCRepository {
+    private final JdbcTemplate jdbcTemplate;
+
+    public SalesProductJDBCRepository(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
+    public int count() {
+        return jdbcTemplate.queryForObject("select count(*) from sales_periods", Integer.class);
+        //Выполняет запрос и преобразует результат к определенному классу
+    }
+
+    public List<SalesPeriodsJDBCDemo> getSalesPeriods() {
+        return jdbcTemplate.query("select* from sales_periods", (rs, rowNum) -> new SalesPeriodsJDBCDemo( //rowMapper
+                rs.getInt("id"), // чтобы преобразовать записи из бд (ResultSet) к нашему классу
+                rs.getLong("price"),
+                rs.getDate("date_from"),
+                rs.getDate("date_to"),
+                rs.getInt("product")
+        ));
+    }
+
+    public List<Product> getProductsWithActivePeriods() {
+        return jdbcTemplate.query(
+                "Select p.id, p.name from product as p Inner join sales_periods as sp " +
+                        "On p.id = sp.product where sp.date_to is null",
+                (rs, rowNum) -> new Product(
+                        rs.getInt("id"),
+                        rs.getString("name")
+                ));
+    }
+}
+
+``` 
  
-  
-[к оглавлению](#SPRING)
+[к оглавлению](#SPRING)  
+
+## Тестирование  
+[пример](https://github.com/magidin91/spring_basic/tree/master/src/test)  
++ см. ворд. файл Java\===Spring===\Intellecta\eduexample    
+1) Мы использовали H2 SQL in memory БД, которая создается при запуске тестов и удаляется после.
+Добавили зависиомости для тестов:  
+```xml
+		<!-- test -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<version>1.4.200</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- test -->
+```  
+2) Добавили в ресурсы тестов конфигурацию application.yml, который будет использоваться для модульных тестов.  
+```yaml 
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:test
+    username: tester
+    password:
+    sql-script-encoding: UTF-8
+  jpa:
+    show sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.H2Dialect
+        hbm2ddl:
+          auto: none
+      javax:
+        persistence:
+          validation:
+            mode: none
+```
+3) Добавили в ресурсы тестов скрипты для создания и таблиц и наполнения их данными (schema.sql, data.sql), нужно использовать именно эти названия.    
+4) Создаели класс конфигурации
+```java
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+
+/**
+ * Конфигурация для тестов
+ */
+@EnableAutoConfiguration
+@EnableJpaRepositories(basePackages = {"ru.education.jpa"}) // указываем, где репозитории Jpa
+@ComponentScan (basePackages = {"ru.education.service.impl"}) // указываем спрингу, где искать компоненты - сервисы
+@EntityScan(basePackages = {"ru.education.entity"}) // указываем, где искать сущности Jpa
+public class TestConfig {
+}
+```  
+## Transactional  
+Чтобы каждый тест откатывался используем эту аннотацию, ее можно использовать в двух конфигурациях.  
+1.  
+@RunWith(SpringRunner.class)  
+@SpringBootTest  
+**@Transactional**  
+@ContextConfiguration(classes = {TestConfig.class})  
+
+Здесь в конфиге TestConfig.class прописана аннтация @EnableAutoConfiguration, поэтому доступен дефолтный PlatformTransactionManager.
+@EnableAutoConfiguration  
+@EnableJpaRepositories(basePackages = {"com.education.jpa"})  
+@ComponentScan(basePackages = {"com.education.service"})  
+@EntityScan(basePackages = {"com.education.entity"})  
+public class TestConfig {}  
+
+2.	Также можно не использовать @ContextConfiguration, тогда в самом тесте нужно указать @EnableAutoConfiguration, чтобы получить PlatformTransactionManager.  
+@RunWith(SpringRunner.class)  
+@SpringBootTest(classes = {TypeController.class, MockTypeService.class})  
+@Transactional  
+@EnableAutoConfiguration  
+
+## ExceptionController  
+Нужно написать ExceptionController, чтобы при получении ошибки, отлавливать их, возвращать объект ErrorResponseEntity 
+с информацией об ошибке, и возвращать конретный статус.  
+ExceptionController - контроллер, который крутится в контексте спринга, но когда бросается Exception, контроллер перехватывает его  
+соответствующим этому исключению обработчиком.    
+ErrorResponseEntity - сущность, которая возвращается контроллером при какой-то ошибке.  
+
+## Модульнео тестирование контроллеров  
+(см. ProductControllerTest)    
+Создали мок для сервиса, т.к. в модульных тестах мы должны тестировать конкретную функциональность, в нашем случае контроллеры.  
+Мок возвращает просто некоторые тестовые данные. 
+Также создаем MockMvc mockMvc, чтобы вызывать нужные http - запросы в ручную.  
+В тестах контроллеров обычно проверяется просто статус, возвращаемый методом.      
+
+[к оглавлению](#SPRING)  
+
+## Spring Security  
+Ключевые объекты контекста Spring Security:
+
++ SecurityContextHolder, в нем содержится информация о текущем контексте безопасности приложения,
+который включает в себя подробную информацию о пользователе(Principal) работающем в настоящее время с приложением. 
+По умолчанию SecurityContextHolder используетThreadLocal для хранения такой информации, что означает, 
+что контекст безопасности всегда доступен для методов исполняющихся в том же самом потоке. 
+Для того что бы изменить стратегию хранения этой информации можно воспользоваться статическим методом класса 
+SecurityContextHolder.setStrategyName(String strategy). Более подробно SecurityContextHolder  
++ SecurityContext, содержит объект Authentication и в случае необходимости информацию системы безопасности, связанную с запросом от пользователя.
++ Authentication представляет пользователя (Principal) с точки зрения Spring Security.
++ GrantedAuthority отражает разрешения выданные пользователю в масштабе всего приложения, такие разрешения (как правило называются «роли»), 
+например ROLE_ANONYMOUS, ROLE_USER, ROLE_ADMIN.  
++ UserDetails предоставляет необходимую информацию для построения объекта Authentication из DAO объектов приложения 
+или других источников данных системы безопасности. Объект UserDetailsсодержит имя пользователя, пароль, флаги: 
+isAccountNonExpired, isAccountNonLocked, isCredentialsNonExpired, isEnabled и Collection — прав (ролей) пользователя.  
++ UserDetailsService, используется чтобы создать UserDetails объект путем реализации единственного метода этого интерфейса  
+
+UserDetails loadUserByUsername(String username) throws UsernameNotFoundException; 
+Позволяет получить из источника данных объект пользователя и сформировать из него объект UserDetails который будет использоваться контекстом Spring Security.  
+
+1. Добавить зависиомсти
+```xml
+	<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt</artifactId>
+			<version>0.9.1</version>
+		</dependency>
+
+```   
+2.        
