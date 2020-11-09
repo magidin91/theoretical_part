@@ -303,7 +303,8 @@ List<Number> intList = new ArrayList<Integer>(); (инвариантность)
 List<?> intList = new ArrayList<Integer>();(ковариантность + контрвариантность)        
 
 ## Bounded Wildcards (Ограниченные)
-[подробнее](https://howtodoinjava.com/java/generics/java-generics-what-is-pecs-producer-extends-consumer-super/)!!!    
+[подробнее](https://howtodoinjava.com/java/generics/java-generics-what-is-pecs-producer-extends-consumer-super/)!!!   
+[подробнее](https://www.javacodegeeks.com/2011/04/java-generics-quick-tutorial.html)     
 
 **PECS (Producer Extends Consumer Super)**
 List<? extends T> list         

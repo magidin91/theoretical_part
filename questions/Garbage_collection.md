@@ -1266,6 +1266,8 @@ public Car(Car otherCar) throws CloneNotSupportedException {
 и будет хранить свою собственную копию, вместо того чтобы совместно использовать ресурс через множество потоков, так долго, сколько поток будет жить.  
 [подробнее](https://topjava.ru/blog/java-memory-leaks)  
 
-[к оглавлению](#Garbage-Collection) 
+[к оглавлению](#Garbage-Collection)
+
+ 
 
 
