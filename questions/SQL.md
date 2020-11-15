@@ -268,7 +268,7 @@ SELECT COUNT(DISTINCT Company) FROM Products; [подробнее](https://metan
 
 [к оглавлению](#SQL-Jdbc)  
 
-## Alter
+## ALTER
 ```sql
 ALTER TABLE Customers    
                       ADD Phone CHARACTER VARYING(20);            - **Добавление нового столбца**
@@ -291,20 +291,19 @@ ALTER TABLE Customers
 
 ## UPDATE/DELETE  
 **UPDATE**  
-Например, увеличим у всех товаров цену на 3000:    
-UPDATE Products SET Price = Price + 3000;    
-В данном случае обновление касается всех строк.
-С помощью выражения WHERE можно с помощью условию конкретизировать обновляемые строки:   
-UPDATE Products SET Manufacturer = 'Samsung Inc.' WHERE Manufacturer = 'Samsung';    
-Также можно обновлять сразу несколько столбцов:    
-UPDATE Products SET Manufacturer = 'Samsung', ProductCount = ProductCount + 3 WHERE Manufacturer = 'Samsung Inc.';
+```sql    
+UPDATE Products 
+                SET Price = Price + 3000; - Например, увеличим у всех товаров цену на 3000. В данном случае обновление касается всех строк.
+                SET Manufacturer = 'Samsung Inc.' WHERE Manufacturer = 'Samsung'; С помощью WHERE можно конкретизировать обновляемые строки.    
+                SET Manufacturer = 'Samsung', ProductCount = ProductCount + 3 WHERE Manufacturer = 'Samsung Inc.'; - Можно обновлять сразу несколько столбцов:
+```
 
-**DELETE**     
-Например, удалим строки, у которых производитель - Apple:  
-DELETE FROM Products WHERE Manufacturer='Apple';    
-Если необходимо вовсе удалить все строки вне зависимости от условия, то условие можно не указывать:    
-DELETE FROM Products;    
-
+**DELETE** 
+```sql
+   
+DELETE FROM Products WHERE Manufacturer ='Apple'; - удаляет строки, у которых производитель Apple     
+DELETE FROM Products; Если необходимо вовсе удалить все строки вне зависимости от условия, то условие можно не указывать
+```    
 [к оглавлению](#SQL-Jdbc)  
 
 ## Ограничения столбцов и таблиц 
