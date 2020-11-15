@@ -83,5 +83,8 @@ public class DemoStream {
         Map<String, Set<Integer>> phonesByCompany = phoneStream.collect(
                 Collectors.groupingBy(Phone::getCompany, Collectors.mapping(Phone::getPrice, Collectors.toSet())));
         System.out.println(phonesByCompany);
+        Stream.ofNullable(2);
+        ArrayList<String> list11 = new ArrayList<>(List.of("a", "b", "c", "d"));
+        Stream.ofNullable(list11).forEach(System.out::println);
     }
 }

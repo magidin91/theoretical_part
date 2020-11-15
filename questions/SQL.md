@@ -269,35 +269,22 @@ SELECT COUNT(DISTINCT Company) FROM Products; [подробнее](https://metan
 [к оглавлению](#SQL-Jdbc)  
 
 ## Alter
-**Добавление нового столбца**  
-ALTER TABLE Customers ADD Phone CHARACTER VARYING(20);  
-**Удаление столбца**    
-ALTER TABLE Customers DROP COLUMN Address;    
-**Изменение типа столбца** 
-Для изменения типа применяется ключевое слово TYPE.  
-ALTER TABLE Customers ALTER COLUMN FirstName TYPE VARCHAR(50);  
-**Изменение ограничений столбца**  
-Для добавления ограничения применяется оператор SET, после которого указывается ограничение. 
-Например, установим для столбца FirstName ограничение NOT NULL:  
-ALTER TABLE Customers ALTER COLUMN FirstName SET NOT NULL;  
-**Для удаления ограничения применяется оператор DROP**, после которого указывается ограничение. 
-Например, удалим выше установленное ограничение:  
-ALTER TABLE Customers ALTER COLUMN FirstName DROP NOT NULL;  
-**Изменение ограничений таблицы**    
-Добавление первичного ключа PRIMARY KEY:  
-ALTER TABLE Customers ADD PRIMARY KEY (cust_id);  
-Добавление ограничение UNIQUE - определим для столбца Email уникальные значения:  
-ALTER TABLE Customers ADD UNIQUE (Email);  
-Мы можем явным образом назначить ограничению при добавлении имени с помощью оператора CONSTRAINT.  
-ALTER TABLE Customers ADD CONSTRAINT phone_unique UNIQUE (Phone);  
-**Удалить ограничение**  
-Чтобы удалить ограничение, надо знать его имя:  
-ALTER TABLE Customers DROP CONSTRAINT phone_unique;  
-**Переименование столбца и таблицы**  
-Переименуем столбец Address в City:  
-ALTER TABLE Customers RENAME COLUMN Address TO City;  
-Переименуем таблицу Customers в Users:  
-ALTER TABLE Customers RENAME TO Users;  
+```sql
+ALTER TABLE Customers    
+                      ADD Phone CHARACTER VARYING(20);            - **Добавление нового столбца**
+                      DROP COLUMN Address;                        - **Удаление столбца**  
+                      RENAME COLUMN Address TO City;              - **Переименуем столбец Address в City**      
+                      ALTER COLUMN FirstName TYPE VARCHAR(50);    - **Изменение типа столбца**     
+                                             SET NOT NULL;        - **Изменение ограничений столбца**  
+                                             DROP NOT NULL;       - **Удаление ограничения**
+ 
+                      ADD CONSTRAINT phone_unique UNIQUE (Phone); - "Добавление ограничения"
+                      DROP CONSTRAINT phone_unique;               - **Чтобы удалить ограничение, надо знать его имя** 
+                      ADD UNIQUE (Email);                         - **Изменение ограничения без имени ограничения**  
+                      ADD PRIMARY KEY (cust_id);  
+
+                      RENAME TO Users;                            - **Переименуем таблицу Customers в Users**  
+``` 
 [подробнее](https://metanit.com/sql/postgresql/2.6.php)    
   
 [к оглавлению](#SQL-Jdbc)  

@@ -1421,7 +1421,7 @@ public class GreetingController {
 @RequestParam(name="name", required=false, defaultValue="World") 
 + String name - это параметр, который мы получаем из запроса.
 Или как агрументурл в гет запросе. Например, http://localhost:8080/greeting?name=misha.  
-Или из тела пост запроса. (например, из html- формы)
+Или из тела пост запроса. (например, из html- формы)  
   
 + required=false - аргумент необязателен
 + defaultValue="World" - значение по умолчанию  
