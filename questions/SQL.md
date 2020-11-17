@@ -293,7 +293,7 @@ ALTER TABLE Customers
 **UPDATE**  
 ```sql    
 UPDATE Products 
-                SET Price = Price + 3000; - Например, увеличим у всех товаров цену на 3000. В данном случае обновление касается всех строк.
+                SET Price = Price + 3000; - увеличим у всех товаров цену на 3000. Обновление касается всех строк.
                 SET Manufacturer = 'Samsung Inc.' WHERE Manufacturer = 'Samsung'; С помощью WHERE можно конкретизировать обновляемые строки.    
                 SET Manufacturer = 'Samsung', ProductCount = ProductCount + 3 WHERE Manufacturer = 'Samsung Inc.'; - Можно обновлять сразу несколько столбцов:
 ```
@@ -307,40 +307,42 @@ DELETE FROM Products; Если необходимо вовсе удалить в
 [к оглавлению](#SQL-Jdbc)  
 
 ## Ограничения столбцов и таблиц 
-## **UNIQUE**    
-Если мы хотим, чтобы столбец имел только уникальные значения, то для него нужно определить атрибут UNIQUE  
-CREATE TABLE Customers (Id SERIAL, FirstName varchar(30) UNIQUE );  
-В данном случае FirstName будет иметь уникальное значение. И мы не сможем добавить в таблицу две строки,
-у которых значения для этих столбцов будет совпадать.    
-Также мы можем определить этот атрибут на уровне таблицы:  
-CREATE TABLE Customers (Id SERIAL PRIMARY KEY, Email varchar(30), Phone varchar(30), Age INTEGER, UNIQUE(Email, Phone));  
-CREATE TABLE Customers (Id SERIAL PRIMARY KEY, Email varchar(30), Phone varchar(30), Age INTEGER,  UNIQUE(Email), UNIQUE(Phone));  
-## **CHECK**     
+## **UNIQUE**
+```sql
+Чтобы столбец имел только уникальные значения, для него нужно определить атрибут UNIQUE. 
+В этом случае мы не сможем добавить две строки с одинаковым значением столбца:   
+CREATE TABLE Customers (Id SERIAL, FirstName varchar(30) UNIQUE );     
+Можно определить этот атрибут на уровне таблицы:  
+                       (Id SERIAL PRIMARY KEY, Email varchar(30), Phone varchar(30), Age INTEGER, UNIQUE(Email, Phone));   
+```    
+## **CHECK**  
 Ключевое слово CHECK задает ограничение для диапазона значений, которые могут храниться в столбце.
 Для этого после слова CHECK указывается в скобках условие, которому должен соответствовать столбец.  
+```sql
 CREATE TABLE Customers (Id SERIAL PRIMARY KEY,
-Age INT CHECK(Age >0 AND Age < 100),  
+Age INT CHECK(Age > 0 AND Age < 100),  
 Email VARCHAR(30) CHECK(Email !=''),   
-Phone VARCHAR(20) UNIQUE CHECK(Phone !=''));  
+Phone VARCHAR(20) UNIQUE CHECK(Phone !=''));
+```     
 ## **CONSTRAINT**    
 С помощью ключевого слова CONSTRAINT можно задать имя для ограничений. В качестве ограничений могут использоваться **PRIMARY KEY, UNIQUE, CHECK**.
-Необязательно задавать имена ограничений, но, зная имя ограничения, мы можем к нему обращаться, например, для его удаления.    
+Необязательно задавать имена ограничений, но, зная имя ограничения, мы можем к нему обращаться, например, для его удаления.  
+```sql
 CREATE TABLE Customers (     
 Id SERIAL CONSTRAINT customer_Id PRIMARY KEY,  
-Email VARCHAR(30) CONSTRAINT customers_email_key UNIQUE,  
 Phone VARCHAR(20) CONSTRAINT customers_phone_key UNIQUE);   
-Мы задали названия: customer_Id, customers_email_key, customers_phone_key.      
+   
 И также можно задать все имена ограничений через атрибуты таблицы:  
-CREATE TABLE Customers ( Id SERIAL, Age INTEGER, Email VARCHAR(30), Phone VARCHAR(20),    
+CREATE TABLE Customers (Id SERIAL, Age INTEGER, Email VARCHAR(30), Phone VARCHAR(20),    
 CONSTRAINT customer_Id PRIMARY KEY(Id),    
 CONSTRAINT customers_age_check CHECK(Age >0 AND Age < 100),    
 CONSTRAINT customers_email_key UNIQUE(Email),    
 CONSTRAINT customers_phone_key UNIQUE(Phone));    
-
+```    
 [к оглавлению](#SQL-Jdbc) 
 
 ## Что такое первичный ключ?  
-**Первичный ключ - ункиальный идентификатор строки в таблице.**  
+**Первичный ключ - уникальный идентификатор строки в таблице.**    
 В качестве первичного ключа необязательно должны выступать столбцы с типом SERIAL, они могут представлять любой другой тип.    
 CREATE TABLE Customers (Id SERIAL PRIMARY KEY);  
 CREATE TABLE Customers (Id SERIAL, FirstName varchar(30), **PRIMARY KEY(Id)**);  
@@ -373,7 +375,7 @@ ALTER TABLE inventory ADD CONSTRAINT fk_inv_product_id FOREIGN KEY (product_id) 
 + CASCADE: автоматически удаляет/изменяет строки из зависимой таблицы при удалении или изменении связанных строк в главной таблице.
 + RESTRICT: предотвращает какие-либо действия в зависимой таблице при удалении/изменении связанных строк в главной таблице.
 То есть фактически какие-либо действия отсутствуют.
-NO ACTION: действие по умолчанию, предотвращает какие-либо действия в зависимой таблице при удалении или изменении связанных строк в главной таблице 
++ NO ACTION: действие по умолчанию, предотвращает какие-либо действия в зависимой таблице при удалении или изменении связанных строк в главной таблице 
 **и генерирует ошибку.**  
 + SET NULL: при удалении связанной строки из главной таблицы устанавливает для столбца внешнего ключа значение NULL.
 + SET DEFAULT: при удалении связанной строки из главной таблицы устанавливает для столбца внешнего ключа значение по умолчанию, которое задается с помощью атрибуты DEFAULT. 
