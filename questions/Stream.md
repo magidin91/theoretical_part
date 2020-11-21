@@ -444,11 +444,14 @@ IntStream.rangeClosed(0, 100) – тоже самое, включая праву
   
 
 Получить лист символов из строки:    
-List<Character> charList = "твояСтрока".chars().mapToObj(c -> (char) c).collect(Collectors.toList());
-  
-Получить массив Character из массива сhar:  
-char[] array = {'a','c','b'};  
-Character[] newArray = IntStream.range(0, array.length).mapToObj(i -> array[i]).toArray(Character[]::new);        
+List<Character> charList = "твояСтрока".chars().mapToObj(c -> (char) c).collect(Collectors.toList());  
+
+Получить из массива int массив Integer:
+Integer[] integerArray = IntStream.of(intArray).boxed().toArray(Integer []::new);  
+
+Получить из массива сhar массив Character:   
+char[] array = {'a','c','b'};
+Character[] newArray = IntStream.range(0, array.length).mapToObj(i -> array[i]).toArray(Character[]::new);      
   
 [оглавление](#stream) 
 
