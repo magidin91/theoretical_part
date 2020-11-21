@@ -12,7 +12,6 @@ public class Wild1 {
         List<? extends Number> intLis = new ArrayList<>(List.of(1, 2));
         Number number = intLis.get(0);
         intLis.add(null);
-        //Number object = numLis.get(0);
         System.out.println(number);
     }
 }

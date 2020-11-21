@@ -294,13 +294,13 @@ class Account<T> implements Accountable<T>{}
    
 Для любого конкретного A, List<A> - это подтип List<?>. Важно, что List<Object> and List<?> - не одно и то же,  
 вы можете вставить Object или его подтип в List<Object>. **Но вы можете вставить только null в List<?>**. 
-Collection<?> — это тоже, что и "? extends Object". Запись вида Collection<?> равносильна Collection<? extends Object>.
+Запись вида Collection<?> равносильна Collection<? extends Object>.
 Соотвественно нельзя вставить ничего кроме null. Но можно получать значения.  
 
 Например, вот такая строка кода не скомпилируется:    
 List<Number> intList = new ArrayList<Integer>(); (инвариантность)   
 Но есть возможность похожей реализации:    
-List<?> intList = new ArrayList<Integer>();(ковариантность + контрвариантность)        
+List<?> intList = new ArrayList<Integer>();  
 
 ## Bounded Wildcards (Ограниченные)
 [подробнее](https://howtodoinjava.com/java/generics/java-generics-what-is-pecs-producer-extends-consumer-super/)!!!   
@@ -316,6 +316,18 @@ List<? extends T> list
 
 2. Если вы хотите записать T в список, вам нужно объявить его List<? super Integer>. 
 Но нет никаких гарантий того, какой тип объекта вы можете прочитать из этого списка.(**кроме объектов класса Object**)  
+
+```java
+public class Pecs {
+    public static void main(String[] args) {
+        List<? super Integer> list = new ArrayList<Number>(List.of(1, 2.0, 2, 5));
+        list.add(5);
+        //list.add(5.1); // ошибка
+        Object object = list.get(0); // хотя мы и кладем Integer  и ниже, мы не можем получить Integer, 
+        // т.к лист уже может включать элементы Number,  например Double
+    }
+}
+```  
 
 В такой тип можно можно положить объекты границы и ниже, т.е. для List<? super Animal> можно положить объекты Animal и ниже, 
 но нельзя положить выше, например, Object, т.к. List<? super Animal> list может содержать список ArrayList<Animal>();  
@@ -420,7 +432,8 @@ public class Node<T> {
  
 public class MyNode extends Node<Integer> {
     public MyNode(Integer data) { super(data); }
- 
+
+    @Override
     public void setData(Integer data) {
         System.out.println("MyNode.setData");
         super.setData(data);
@@ -442,7 +455,8 @@ public class Node {
  
 public class MyNode extends Node {
     public MyNode(Integer data) { super(data); }
- 
+
+    @Override
     public void setData(Integer data) {
         System.out.println("MyNode.setData");
         super.setData(data);
@@ -491,7 +505,8 @@ List<String> strings = new ArrayList(ints);
 List<Integer> list = new ArrayList<Integer>();  
 + С появлением даймонд-оператора в  Java 7 мы можем не указывать тип у ArrayList:  
 List<Integer> list = new ArrayList<>();
-+ выведение типа в обобщенном методе из указанных аргументов.  
++ **выведение типа в обобщенном методе из указанных аргументов.**  
++ var
 
 [к оглавлению](#collections-pro)  
 
@@ -500,7 +515,7 @@ List<Integer> list = new ArrayList<>();
 Если не указать тип при создании экземпляра класса, то дженерики не учитываются везде, даже в методах, где тип класса не используется.   
 Т.о. методы test работают как обычные перегруженные методы, 
 т.е. вариант метода определяется наиболее подходящем типом переданной ссылочной переменной. 
-Унас есть два метода тест: один принимает List collection, другой - Collection collection, соответственно выбирается более специфический 
+У нас есть два метода тест: один принимает List collection, другой - Collection collection, соответственно выбирается более специфический 
 List collection
 Если указать тип при создании экземпляра, то компилятор начинает различать типы у коллекций указанных в параметрах методов.  
 ```java
@@ -566,7 +581,7 @@ public static void main(String[] args) {
 getGenericSuperclass()        
 
 Неужели информации о параметрах generic-классов при компиляции всегда теряется бесследно и не существует во время выполнения?
-Нет, существует. Но только в информации о классе, который явно определяет значение параметра в его generic-родителе.  
+Нет, существует. Но только в информации класса, который явно определяет значение параметра в его generic-родителе.  
 
 **Т.е. создаем параметризованный класс, а затем создаем для него класс-наследник. 
 Создаем объект наследника и помещаем его в переменную базового типа. И Дальше используем метод getGenericSuperclass().**    
