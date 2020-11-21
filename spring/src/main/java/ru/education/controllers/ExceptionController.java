@@ -10,8 +10,8 @@ import ru.education.exceptions.*;
 @ControllerAdvice
 public class ExceptionController {
 
-    @ExceptionHandler(EntityIllegalArgumentException.class) // обрабатываем EntityIllegalArgumentException
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(EntityIllegalArgumentException.class) // исключение, которое должны обработать - EntityIllegalArgumentException
+    @ResponseStatus(HttpStatus.BAD_REQUEST) // статус, который должны вернуть
     @ResponseBody //запрос вернет body ErrorResponseEntity
     private ErrorResponseEntity handleEntityIllegalArgumentException(EntityIllegalArgumentException e) {
         return createErrorResponseEntity(e, HttpStatus.BAD_REQUEST); //BAD_REQUEST, т.к. плохие входн. параметры
@@ -45,6 +45,11 @@ public class ExceptionController {
         return createErrorResponseEntity(e, HttpStatus.NOT_FOUND);
     }
 
+    /**
+     * @param e перехватываемая ошибка
+     * @param httpStatus
+     * @return ErrorResponseEntity
+     */
     private static ErrorResponseEntity createErrorResponseEntity(BaseException e, HttpStatus httpStatus) {
        return new ErrorResponseEntity(e.getMessage(), httpStatus.getReasonPhrase(), httpStatus.value());
     }

@@ -29,9 +29,9 @@ public class SalesPeriods {
 
     @Column(name = "date_to")
     private Date dateTo;
-
+//получаем вместо интежер ид, запись на которую ссылается внешний ключ
     @OneToOne
-    @JoinColumn(name = "product", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "product", referencedColumnName = "id", nullable = false)// колонка продкт, которая ссылается на ид
     private Product product; //будет возвращать объект связанной таблицы
 
     public Integer getId() {

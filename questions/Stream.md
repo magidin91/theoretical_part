@@ -428,12 +428,10 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
 
 ## Способы создания Stream  
 
-•	Пустой стрим: Stream.empty()
-•   Stream.ofNullable(T) - если передаваемый элемент - null, то возвращает пустой стрим, если нет - то просто стрим. Защищает от NullPointerException.  
-Пример:
-ArrayList<String> list = new ArrayList<>(List.of("a", "b", "c", "d"));  
-Stream.ofNullable(list).forEach(System.out::println);   
-Просто выведет элементы, но если бы list = null, то вместо NullPointerException, мы бы получили Stream.empty().   
+•	Пустой стрим: Stream.empty()  
+•   Stream.ofNullable(T) - если передаваемый элемент - null, то возвращает пустой стрим, если нет - то просто стрим. Защищает от NullPointerException.    
+Stream.ofNullable(2); Stream.ofNullable(null);  
+Просто выведет элементы, но если null, то вместо NullPointerException, мы бы получили Stream.empty().   
 •	Стрим из List: list.stream()  
 •	Стрим из Map: map.entrySet().stream()  
 •	Стрим из массива: Arrays.stream(array)  
@@ -446,11 +444,14 @@ IntStream.rangeClosed(0, 100) – тоже самое, включая праву
   
 
 Получить лист символов из строки:    
-List<Character> charList = "твояСтрока".chars().mapToObj(c -> (char) c).collect(Collectors.toList());
-  
-Получить массив Character из массива сhar:  
-char[] array = {'a','c','b'};  
-Character[] newArray = IntStream.range(0, array.length).mapToObj(i -> array[i]).toArray(Character[]::new);        
+List<Character> charList = "твояСтрока".chars().mapToObj(c -> (char) c).collect(Collectors.toList());  
+
+Получить из массива int массив Integer:
+Integer[] integerArray = IntStream.of(intArray).boxed().toArray(Integer []::new);  
+
+Получить из массива сhar массив Character:   
+char[] array = {'a','c','b'};
+Character[] newArray = IntStream.range(0, array.length).mapToObj(i -> array[i]).toArray(Character[]::new);      
   
 [оглавление](#stream) 
 
@@ -650,7 +651,7 @@ double productOfSqrRoots2 = myList.parallelStrearn().reduce(1.0, (а,Ь) ->а* M
 [оглавление](#stream)  
 
 ## Peek  
-Используется либо для дебагга, либо чтобы зименить объекты в первоначальном стриме.    
+Используется либо для дебагга, либо чтобы изменить объекты в источнике.    
   
 Возвращает тот же стрим, но применяет функцию к каждому элементу стрима. **Оба ForEach(терминальный) и Peek(конвейрный) - меняют объекты в источнике.**    
 peek (Consumer action)  
