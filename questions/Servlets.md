@@ -208,3 +208,55 @@ public class JspServlet extends HttpServlet {
 ```  
 
 **JSTL - стандартную библиотеку тэгов JSP (JSP standart tag library) - набор тэгов для упрощения создания динамических JSP страниц поверх Java Servlet**  
+
+## Cеансы, сессии в java  
+https://www.youtube.com/watch?v=4LCZ2svvUFU&ab_channel=alishev
+Http-протокл работает по своей природе как запрос-ответ. Но иногда надо хранить информацию между запросами. 
+Для этого разработан механизм сессии - позволяющий сохранять информацию между запросами одного пользователя на сервере.  
+При этом такая информация должна быть доступна для всех сервлетов.  
+
+Сессия - объект на сервере, хранящий информацию о клиенте.  
+Куки - информация, которая хранится на клиенте, которая отправляется при каждом запросе на сервер.  
+Создаем сессию на сервере и отправляем куку с айди сессии клиенту, затем при запросах получаем эту куку и предоставляем клиенту его сессию.  
+Например, товары добавленные в корзине отображаются в течение запросов всей сессии.    
+Куки хранятся в браузере.    
+
+Есть три способа отслеживания сессии:
+
+1. cookies  
+2. переопределяемый URL (используется response.encodeURL() для каждой ссылки, который вставляет идентификатор сессии в каждый URL.)  
+3. спрятанные поля HTML-страницы (в виде скрытых полей в форме)  
+Java предоставляет класс HttpSession, позволяющий автоматизировать всю работу с куками.  
+
+```java
+@WebServlet("/hello")
+public class HelloServlet extends HttpServlet {
+  
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
+         
+        // получаем сессию
+        HttpSession session = request.getSession();
+        // получаем объект name
+        String name = (String) session.getAttribute("name");
+         
+        PrintWriter out = response.getWriter();
+        try {
+            // если объект ранее не установлен
+            if(name == null) {
+                // устанавливаем объект с ключом name
+                session.setAttribute("name", "Tom Soyer");
+                out.println("Session data are set");
+            }
+            else {
+                out.println("Name: " + name);
+                // удаляем объект с ключом name
+                session.removeAttribute("name");
+            }
+        }
+        finally {
+            out.close();
+        }
+    }
+}
+```      
